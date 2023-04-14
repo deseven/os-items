@@ -46,146 +46,78 @@ function dynamicSort(property) {
 }
 
 function getItemInfo(item,items) {
-	itemInfo = '<h2>' + item.title + '</h2><strong>Description:</strong> ' + item.description + '<br><strong>Rarity:</strong> ' + item.rarity + '<br><strong>Value:</strong> ' + item.value + ' OC<br>'
-	item.use = item.use.toLowerCase();
-	atLeastOneValidEffect = false;
-	switch (item.use) {
-		case "eat":
-		case "drink":
-		case "smoke":
-			itemInfo += '<br>'
-			if (item.use == 'eat') itemInfo += '<strong>Can be eaten. It will:</strong><br>';
-			if (item.use == 'drink') itemInfo += '<strong>Can be drinked. It will:</strong><br>';
-			if (item.use == 'smoke') itemInfo += '<strong>Can be smoked. It will:</strong><br>';
-			var itemHungerThirstSmokeChange = ((item.arguments[0] !== void 0 ) ? item.arguments[0] : 0);
-			var itemAlcoholChange           = ((item.arguments[1] !== void 0 ) ? item.arguments[1] : 0);
-			var itemGivesItem               = ((item.arguments[2] !== void 0 ) ? item.arguments[2] : 0);
-			var itemSMVChange               = ((item.arguments[3] !== void 0 ) ? item.arguments[3] : 0);
-			var itemHealthChange            = ((item.arguments[4] !== void 0 ) ? item.arguments[4] : 0);
-			var itemDepressionChange        = ((item.arguments[5] !== void 0 ) ? item.arguments[5] : 0);
-			if (itemHungerThirstSmokeChange != 0) {
-				if (item.use == 'eat') {
-					if (itemHungerThirstSmokeChange > 0) {
-						itemInfo += ' &bull; lower your hunger by ' + itemHungerThirstSmokeChange + '%<br>';
-					} else {
-						itemInfo += ' &bull; increase your hunger by ' + (itemHungerThirstSmokeChange*-1) + '%<br>';
-					}
-				} else if (item.use == 'drink') {
-					if (itemHungerThirstSmokeChange > 0) {
-						itemInfo += ' &bull; lower your thirst by ' + itemHungerThirstSmokeChange + '%<br>';
-					} else {
-						itemInfo += ' &bull; increase your thirst by ' + (itemHungerThirstSmokeChange*-1) + '%<br>';
-					}
-				} else {
-					if (itemHungerThirstSmokeChange > 0) {
-						itemInfo += ' &bull; lower your smoke need by ' + itemHungerThirstSmokeChange + '%<br>';
-					} else {
-						itemInfo += ' &bull; increase your smoke need by ' + (itemHungerThirstSmokeChange*-1) + '%<br>';
-					}
-				}
-				atLeastOneValidEffect = true;
-			}
-			if (itemAlcoholChange != 0) {
-				if (itemAlcoholChange < 0) {
-					itemInfo += ' &bull; lower your alcohol level by ' + (itemAlcoholChange*-1) + '%<br>';
-				} else {
-					itemInfo += ' &bull; increase your alcohol level by ' + itemAlcoholChange + '%<br>';
-				}
-				atLeastOneValidEffect = true;
-			}
-			if (itemGivesItem != -1) {
-				items.forEach(function(givesItem) {
-					if (itemGivesItem == givesItem.id) {
-						itemInfo += ' &bull; give you <a href="#' + givesItem.id + '" onclick="switchToItem(' + givesItem.id + ')">[' + givesItem.title + ']</a><br>';
-						atLeastOneValidEffect = true;
-					}
-				});
-			}
-			if (itemSMVChange != 0) {
-				if (itemSMVChange < 0) {
-					itemInfo += ' &bull; lower your SMV progression rate by ' + (itemSMVChange*-1) + '%<br>';
-				} else {
-					itemInfo += ' &bull; increase your SMV progression rate by ' + itemSMVChange + '%<br>';
-				}
-				atLeastOneValidEffect = true;
-			}
-			if (itemHealthChange != 0) {
-				if (itemHealthChange < 0) {
-					itemInfo += ' &bull; hurt you by ' + (itemHealthChange*-1) + '%<br>';
-				} else {
-					itemInfo += ' &bull; heal you by ' + itemHealthChange + '%<br>';
-				}
-				atLeastOneValidEffect = true;
-			}
-			if (itemDepressionChange != 0) {
-				if (itemDepressionChange < 0) {
-					itemInfo += ' &bull; lower your depression by ' + (itemDepressionChange*-1) + '%<br>';
-				} else {
-					itemInfo += ' &bull; increase your depression by ' + itemDepressionChange + '%<br>';
-				}
-				atLeastOneValidEffect = true;
-			}
-			break;
-		case "break":
-		case "open":
-			itemInfo += '<br>'
-			if (item.use == 'break') itemInfo += '<strong>Can be broken. It will:</strong><br>';
-			if (item.use == 'opened') itemInfo += '<strong>Can be opened. It will:</strong><br>';
-			var itemOutput    = ((item.arguments[0] !== void 0 ) ? item.arguments[0] : 0);
-			var itemAmount    = ((item.arguments[1] !== void 0 ) ? item.arguments[1] : 0);
-			var itemContainer = ((item.arguments[2] !== void 0 ) ? item.arguments[2] : 0);
-			if (itemOutput != -1) {
-				items.forEach(function(givesItem) {
-					if (itemOutput == givesItem.id) {
-						if (itemAmount == 1) {
-							itemInfo += ' &bull; give you <a href="#' + givesItem.id + '" onclick="switchToItem(' + givesItem.id + ')">[' + givesItem.title + ']</a><br>';
-							atLeastOneValidEffect = true;
-						} else if (itemAmount > 1) {
-							itemInfo += ' &bull; give you ' + itemAmount + 'x <a href="#' + givesItem.id + '" onclick="switchToItem(' + givesItem.id + ')">[' + givesItem.title + ']</a><br>';
-							atLeastOneValidEffect = true;
+	itemInfo = '<h2>' + item.Title + '</h2>' +
+	  '<strong>ID:</strong> ' + item.ID + '<br>' + 
+	  ((item.Description) ? '<strong>Description:</strong> ' + item.Description + '<br>'  : '') +
+	  '<strong>Value:</strong> ' + item.Value + ' OC<br>' +
+	  '<strong>Stackable:</strong> ' + ((item.Stackable > 1) ? 'x' + item.Stackable : 'no') + '<br>';
+	item.arguments = []; // to remove
+	item.Actions.forEach(function(action) {
+		action.Name = action.Name.toLowerCase();
+		var atLeastOneValidEffect = false;
+		if (action.Name) {
+			switch (action.Name) {
+				case "eat":
+				case "drink":
+				case "smoke":
+					itemInfo += '<br>'
+					if (action.Name == 'eat') itemInfo += '<strong>Can be eaten. It will:</strong><br>';
+					if (action.Name == 'drink') itemInfo += '<strong>Can be drunk. It will:</strong><br>';
+					if (action.Name == 'smoke') itemInfo += '<strong>Can be smoked. It will:</strong><br>';
+					if (action.Amount != 0) {
+						switch (action.Type.toLowerCase()) {
+							case "food":
+								itemInfo += ' &bull; lower your hunger by ' + action.Amount + '%<br>';
+								atLeastOneValidEffect = true;
+								break;
+							case "drink":
+								itemInfo += ' &bull; lower your thirst by ' + action.Amount + '%<br>';
+								atLeastOneValidEffect = true;
+								break;
+							case "smoke":
+								itemInfo += ' &bull; lower your smoke need by ' + action.Amount + '%<br>';
+								atLeastOneValidEffect = true;
+								break;
 						}
 					}
-				});
+					break;
+				case "open":
+					itemInfo += '<br><strong>Can be opened. It will:</strong><br>';
+					// to do
+					break;
+				case "equip":
+					itemInfo += '<br><strong>Can be equipped.</strong><br>';
+					atLeastOneValidEffect = true
+					// to do
+					break;
+				default:
+					itemInfo += '<br><strong>Can be used. It will:</strong><br>'
 			}
-			if (itemContainer != -1) {
-				items.forEach(function(givesItem) {
-					if (itemContainer == givesItem.id) {
-						itemInfo += ' &bull; give you <a href="#' + givesItem.id + '" onclick="switchToItem(' + givesItem.id + ')">[' + givesItem.title + ']</a><br>';
-						atLeastOneValidEffect = true;
-					}
-				});
+			function effectString(value,description) {
+				if (value > 0) {
+					atLeastOneValidEffect = true
+					return ' &bull; increase your ' + description + ' by ' + value + '<br>';
+				} else if (value < 0) {
+					atLeastOneValidEffect = true
+					return ' &bull; decrease your ' + description + ' by ' + (value*-1) + '<br>';
+				}
 			}
-			break;
-		default:
-			itemInfo += '<strong>Usage:</strong> ' + item.use
-			atLeastOneValidEffect = true;
-	}
-	if (!atLeastOneValidEffect) {
-		itemInfo += ' &bull; do nothing<br>';
-	}
-	switch (item.id) { // harcoded because reasons! (ask Oskutin)
-		case 20310:
-			itemInfo += ' &bull; lower your tiredness by 15%<br>';
-			break;
-		case 20311:
-			itemInfo += ' &bull; lower your tiredness by 20%<br>';
-			break;
-		case 20312:
-			itemInfo += ' &bull; lower your tiredness by 25%<br>';
-			break;
-		case 20313:
-			itemInfo += ' &bull; lower your tiredness by 15%<br>';
-			break;
-		case 20110:
-			itemInfo += ' &bull; lower your tiredness by 30%<br>';
-			break;
-		case 140030:
-			itemInfo += ' &bull; increase your tiredness by 65%<br>';
-			break;
-		case 150010:
-			itemInfo += ' &bull; lower your SMV progression by 5%<br>';
-			break;
-	}
+			if (action.Intoxication)       itemInfo += effectString(action.Intoxication,      'intoxication');
+			if (action.SMV)                itemInfo += effectString(action.SMV,               'SMV infection state');
+			if (action.SMVProgressionRate) itemInfo += effectString(action.SMVProgressionRate,'SMV progression rate');
+			if (action.Depression)         itemInfo += effectString(action.Depression,        'depression');
+			if (action.Health)             itemInfo += effectString(action.Health,            'health');
+			if (action.Bleeding)           itemInfo += effectString(action.Bleeding,          'bleeding');
+			if (action.High)               itemInfo += effectString(action.High,              'high');
+			if (action.Tiredness)          itemInfo += effectString(action.Tiredness,         'tiredness');
+			if (action.AlcoholAddiction)   itemInfo += effectString(action.AlcoholAddiction,  'alcohol addiction');
+			if (action.MushroomAddiction)  itemInfo += effectString(action.MushroomAddiction, 'mushroom addiction');
+			if (action.SmokingAddiction)   itemInfo += effectString(action.SmokingAddiction,  'smoking addiction');
+		}
+		if (!atLeastOneValidEffect) {
+			itemInfo += ' &bull; do nothing<br>';
+		}
+	});
 	var relatedItems = [];
 	items.forEach(function(relatedItem) {
 		switch (relatedItem.use) {
@@ -230,17 +162,18 @@ $(document).ready(function() {
     	placeholder: 'Select item...',
     	width: 200
     });
+
     $.getJSON("res/Items.json",function(data) {
     	var items = [];
     	var categories = [];
   		var uniqueCategories = new Map();
   		$.each(data,function(key,val) {
-  			if (val.category[0] === val.category[0].toUpperCase()) { // if category starts with a capital letter
-  				uniqueCategories.set(val.category,'');
-  				val.use = val.use.toLowerCase();
-  				val.arguments = val.arguments.split(' ');
-  				items.push(val);
-  			}
+  			$.each(val.Categories,function(key,val) {
+  				//if (val[0] === val[0].toUpperCase()) { // if category starts with a capital letter
+  					uniqueCategories.set(val,'');
+  				//}
+  			});
+  			items.push(val);
   		});
   		uniqueCategories.forEach(function(value,key) {
   			categories.push(key);
@@ -254,39 +187,46 @@ $(document).ready(function() {
   		})
   		$("#loader").hide();
 		$("#selector").show();
+		$('#stats').html('(c:' + categories.length + ' i:' + items.length + ')');
+
 		$('#title').on('select2:select',function (e) {
 			if (e.params.data.id >= 0) {
 				items.forEach(function(item) {
-					if (e.params.data.id == item.id) {
+					if (e.params.data.id == item.ID) {
 						$('#itemInfo').html(getItemInfo(item,items));
-						if (!e.params.data.fromLink) setHash(item.id);
+						if (!e.params.data.fromLink) setHash(item.ID);
 					}
 				});
 			}
 		});
+		
 		$('#category').on('select2:select',function (e) {
 			if (e.params.data.text) {
 				$('#title').val(null).empty().trigger('change');
 				var categoryItems = [];
 				items.forEach(function(item) {
-					if ((e.params.data.text == item.category) || (e.params.data.text == '[ALL]')) {
-						categoryItems.push(item);
-					}
+					var itemFound = false;
+					item.Categories.forEach(function(category) {
+						if ((e.params.data.text == category) || (e.params.data.text == '[ALL]')) {
+							itemFound = true;
+						}
+					});
+					if (itemFound) categoryItems.push(item);
 				});
-				console.log(categoryItems);
-				categoryItems.sort(dynamicSort("title"));
+				//console.log(categoryItems);
+				categoryItems.sort(dynamicSort("Title"));
 				categoryItems.forEach(function(item) {
-					$('#title').append(new Option(item.title,item.id,false,false));
+					$('#title').append(new Option(item.Title,item.ID,false,false));
 				});
 				$('#title').val(null).trigger('change');
 				if (e.params.data.fromLink === true) {
 					items.forEach(function(item) {
-						if (window.location.hash.substring(1) == item.id) {
-							$('#title').val(item.id);
+						if (window.location.hash.substring(1) == item.ID) {
+							$('#title').val(item.ID);
 							$('#title').trigger('change');
 							var fromLinkData = {
 								"fromLink": true,
-								"id": item.id
+								"id": item.ID
 							};
 							$('#title').trigger({
 								type: 'select2:select',
@@ -301,15 +241,16 @@ $(document).ready(function() {
 			}
 			if (!e.params.data.fromLink) removeHash();
 		});
+
 		var itemFound = false;
 		if (window.location.hash.substring(1)) {
   			items.forEach(function(item) {
-				if (window.location.hash.substring(1) == item.id) {
-					$('#category').val(item.category);
+				if (window.location.hash.substring(1) == item.ID) {
+					$('#category').val(item.Categories[0]);
 					$('#category').trigger('change');
 					var fromLinkData = {
 						"fromLink": true,
-						"text": item.category
+						"text": item.Categories[0]
 					};
 					$('#category').trigger({
 						type: 'select2:select',
