@@ -173,6 +173,7 @@ $(document).ready(function() {
   					uniqueCategories.set(val,'');
   				//}
   			});
+  			val.Title = val.Title.trim();
   			items.push(val);
   		});
   		uniqueCategories.forEach(function(value,key) {
@@ -187,7 +188,7 @@ $(document).ready(function() {
   		})
   		$("#loader").hide();
 		$("#selector").show();
-		$('#stats').html('(c:' + categories.length + ' i:' + items.length + ')');
+		$('#stats').html('loaded ' + items.length + ' items in ' + categories.length + ' categories');
 
 		$('#title').on('select2:select',function (e) {
 			if (e.params.data.id >= 0) {

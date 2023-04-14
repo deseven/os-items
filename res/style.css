@@ -31,8 +31,12 @@ a:active {
   width: 480px;
   border: 1px solid #000;
   border-radius: 5px;
-  padding: 240px 0 10px 0;
-  background: white url("images/os_items.png") no-repeat;
+  padding: 295px 0 10px 0;
+  background-color: #eee;
+  background-image:    url(images/os_items.jpg);
+  background-size:     480px;                      /* <------ */
+  background-repeat:   no-repeat;
+  background-position: top;  
 }
 
 #category,#title {
@@ -61,6 +65,12 @@ a:active {
   	background: #ffffff;
   	text-align: center;
   	font-family: 'PT Sans';
+}
+
+#stats {
+  text-align: center;
+  font-family: 'PT Sans';
+  font-size:12px;
 }
 
 .footer {
