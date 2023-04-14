@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Open Sewer items directory</title>
+	<link rel="stylesheet" href="res/pure-min.css" />
+	<link rel="stylesheet" href="res/select2.min.css" />
+	<link rel="stylesheet" href="res/style.css" />
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<script src="res/jquery.js"></script>
+	<script src="res/select2.min.js"></script>
+</head>
+
+<body>
+	<div class="container">
+		<div id="loader" style="text-align:center"><img src="res/images/loader.gif"></div>
+		<form class="pure-form pure-form-aligned" id="selector" style="display:none">
+			<fieldset>
+				<div class="pure-control-group">
+					<label for="category">Category</label>
+			        <select id="category" required></select>
+		    	</div>
+		    	<div class="pure-control-group">
+		    		<label for="title">Item</label>
+			    	<select id="title" required></select>
+		    	</div>
+    		</fieldset>
+    	</form>
+    	<hr>
+    	<div id="itemInfo">Choose an item.</div>
+	</div>
+	<div class="footer">made by <a href="http://d7.wtf/">deseven</a>, based on original <a href="https://loisteinteractive.com/">Loiste</a> data</div>
+	<script src="res/itemdir.js?20181216"></script>
+</body>
+
+</html> 
